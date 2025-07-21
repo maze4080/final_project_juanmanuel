@@ -22,28 +22,22 @@ def emotion_detector(text_to_analyze):
     input_json = { "raw_document": { "text": text_to_analyze } }
 
     try:
-        # Añadido un timeout explícito de 10 segundos para evitar que se cuelgue indefinidamente
         response = requests.post(url, headers=headers, json=input_json, timeout=10)
         response.raise_for_status()  # Lanza una excepción para errores HTTP (4xx o 5xx)
         
-        # Convierte el texto de respuesta en un diccionario utilizando las funciones de la biblioteca json.
-        # Esto ya lo hacemos con response.json()
+
         response_data = response.json()
         
-        # Extrae el conjunto requerido de emociones y sus puntajes.
-        # La estructura es: response_data['document']['emotion']['predictions'][0]['emotion']
+
         emotions_scores = response_data['document']['emotion']['predictions'][0]['emotion']
         
-        # Extraer las puntuaciones individuales
         anger_score = emotions_scores.get('anger', 0.0)
         disgust_score = emotions_scores.get('disgust', 0.0)
         fear_score = emotions_scores.get('fear', 0.0)
         joy_score = emotions_scores.get('joy', 0.0)
         sadness_score = emotions_scores.get('sadness', 0.0)
 
-        # Escribe la lógica del código para encontrar la emoción dominante,
-        # que es la emoción con el puntaje más alto.
-        # Crear un diccionario para encontrar la dominante fácilmente
+     
         all_emotions = {
             'anger': anger_score,
             'disgust': disgust_score,
@@ -52,9 +46,7 @@ def emotion_detector(text_to_analyze):
             'sadness': sadness_score
         }
         
-        # Encuentra la emoción con el puntaje más alto
-        # Usamos .items() para obtener pares (nombre_emocion, puntaje)
-        # key=lambda item: item[1] le dice a max() que compare por el segundo elemento del par (el puntaje)
+   
         dominant_emotion_name = max(all_emotions.items(), key=lambda item: item[1])[0]
         
         # Modifica la función emotion_detector para que devuelva el siguiente formato de salida.
